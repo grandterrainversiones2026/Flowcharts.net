@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080b12" />
+  <title>Mermaid Studio</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="toast" class="toast" role="status"></div>
+
+  <main id="homeView" class="home-view">
+    <nav class="home-nav">
+      <a class="brand" href="#" aria-label="Mermaid Studio">
+        <span class="brand-mark">M</span>
+        <span>Mermaid <b>Studio</b></span>
+      </a>
+      <span class="local-pill"><span></span> Tus archivos permanecen locales</span>
+    </nav>
+
+    <section class="hero">
+      <div class="eyebrow">EDITOR VISUAL PARA MERMAID</div>
+      <h1>Diagramas claros.<br /><em>Código limpio.</em></h1>
+      <p>Crea y conecta ideas de forma visual. Mermaid Studio mantiene el código sincronizado mientras tú te concentras en el flujo.</p>
+      <div class="hero-actions">
+        <button id="newDiagramBtn" class="btn btn-primary"><span>＋</span> Nuevo diagrama</button>
+        <button id="openFolderBtn" class="btn btn-secondary"><span>⌁</span> Abrir carpeta local</button>
+        <label class="btn btn-secondary file-label"><span>↥</span> Abrir archivo
+          <input id="fileInput" type="file" accept=".text,.txt,text/plain" />
+        </label>
+      </div>
+      <small>Compatible con archivos <strong>.text</strong> y <strong>.txt</strong></small>
+    </section>
+
+    <section id="recentSection" class="recent-section hidden">
+      <div class="section-heading"><div><span>CARPETA LOCAL</span><h2>Tus diagramas</h2></div><button id="changeFolderBtn" class="icon-text-btn">Cambiar carpeta</button></div>
+      <div id="fileGrid" class="file-grid"></div>
+    </section>
+
+    <footer class="home-footer"><span>Mermaid Studio · Local first</span><span>Sin cuentas. Sin nube. Sin ruido.</span></footer>
+  </main>
+
+  <main id="editorView" class="editor-view hidden">
+    <header class="editor-header">
+      <div class="header-left">
+        <button id="backBtn" class="square-btn" title="Volver">←</button>
+        <a class="brand small"><span class="brand-mark">M</span></a>
+        <span class="divider"></span>
+        <div class="title-wrap"><input id="diagramTitle" value="Diagrama sin título" aria-label="Nombre del diagrama" /><span id="saveState">Cambios guardados localmente</span></div>
+      </div>
+      <div class="header-center">
+        <button id="undoBtn" class="square-btn" title="Deshacer">↶</button><button id="redoBtn" class="square-btn" title="Rehacer">↷</button>
+        <span class="divider"></span>
+        <button id="zoomOutBtn" class="square-btn">−</button><span id="zoomLabel">100%</span><button id="zoomInBtn" class="square-btn">＋</button>
+      </div>
+      <div class="header-actions">
+        <button id="saveBtn" class="btn btn-secondary compact">Guardar</button>
+        <button id="exportBtn" class="btn btn-primary compact">Exportar código</button>
+      </div>
+    </header>
+
+    <aside class="tool-rail">
+      <button class="tool active" data-tool="select" title="Seleccionar"><span>↖</span><small>Selección</small></button>
+      <button class="tool" data-tool="node" title="Agregar nodo"><span>□</span><small>Nodo</small></button>
+      <button class="tool" data-tool="decision" title="Agregar decisión"><span>◇</span><small>Decisión</small></button>
+      <button class="tool" data-tool="connect" title="Conectar nodos"><span>↗</span><small>Conectar</small></button>
+      <div class="rail-spacer"></div>
+      <button id="fitBtn" class="tool" title="Ajustar vista"><span>⌗</span><small>Ajustar</small></button>
+    </aside>
+
+    <section id="canvasWrap" class="canvas-wrap">
+      <div id="canvas" class="canvas">
+        <svg id="edgesLayer" class="edges-layer" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" /></marker></defs><g id="edgesGroup"></g></svg>
+        <div id="nodesLayer"></div>
+      </div>
+      <div class="canvas-hint"><kbd>Espacio</kbd> + arrastrar para mover · Doble clic para crear nodo</div>
+      <div class="minimap"><div class="mini-title">VISTA GENERAL</div><svg id="minimapSvg" viewBox="0 0 220 120"></svg></div>
+    </section>
+
+    <aside class="code-panel">
+      <div class="panel-header"><div><span class="status-dot"></span><strong>Código Mermaid</strong></div><button id="collapseCodeBtn" class="square-btn">›</button></div>
+      <div class="code-toolbar"><span>flowchart TD</span><button id="copyCodeBtn" class="icon-text-btn">Copiar</button></div>
+      <textarea id="mermaidCode" spellcheck="false" aria-label="Código Mermaid"></textarea>
+      <div class="panel-footer"><span><i></i> Sincronizado</span><span id="codeStats">0 nodos · 0 conexiones</span></div>
+    </aside>
+
+    <div id="selectionToolbar" class="selection-toolbar hidden">
+      <button id="editNodeBtn">✎ Renombrar</button><span></span><button id="duplicateNodeBtn">⧉ Duplicar</button><button id="deleteNodeBtn" class="danger">⌫ Eliminar</button>
+    </div>
+  </main>
+
+  <dialog id="exportDialog" class="export-dialog">
+    <div class="modal-heading"><div><span class="modal-icon">↗</span><div><h2>Exportar Mermaid</h2><p>Copia el código y úsalo donde quieras.</p></div></div><button id="closeExportBtn" class="square-btn">×</button></div>
+    <div class="export-code-wrap"><div class="export-code-head"><span>MERMAID</span><span id="exportStats"></span></div><pre id="exportCode"></pre></div>
+    <div class="modal-actions"><button id="closeExportBtn2" class="btn btn-secondary">Cerrar</button><button id="copyExportBtn" class="btn btn-primary">Copiar código</button></div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
