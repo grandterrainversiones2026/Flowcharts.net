@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080b12" />
+  <title>Flowcharts</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="toast" class="toast" role="status"></div>
+
+  <main id="homeView" class="home-view">
+    <nav class="home-nav">
+      <a class="brand" href="#" aria-label="Flowcharts">
+        <span class="brand-mark">F</span>
+        <span><b>Flowcharts</b></span>
+      </a>
+      <div class="home-nav-actions"><span class="local-pill"><span></span> Tus archivos permanecen locales</span><button id="homeThemeBtn" class="theme-switch" aria-label="Cambiar tema"><i></i><b>Claro</b></button></div>
+    </nav>
+
+    <section id="recentSection" class="recent-section hidden">
+      <div class="section-heading"><div><span>HISTORIAL LOCAL</span><h2>Flowcharts recientes</h2></div><button id="clearRecentBtn" class="icon-text-btn">Limpiar historial</button></div>
+      <div id="fileGrid" class="file-grid"></div>
+    </section>
+
+    <section class="hero professional-hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span></span> ENTORNO VISUAL PARA MERMAID</div>
+        <h1>Diseña sistemas.<br /><em>Entrega claridad.</em></h1>
+        <p>Un workspace profesional para convertir arquitectura, procesos y decisiones en flowcharts Mermaid mantenibles.</p>
+        <div class="hero-actions">
+          <button id="newDiagramBtn" class="btn btn-primary"><span>＋</span> Nuevo flowchart</button>
+          <button id="openFolderBtn" class="btn btn-secondary"><span>⌁</span> Abrir workspace</button>
+          <button id="openFileBtn" class="btn btn-secondary"><span>↥</span> Importar Mermaid</button>
+          <input id="fileInput" class="hidden" type="file" accept=".text,.txt,text/plain" />
+        </div>
+        <div class="hero-meta"><span>Local-first</span><span>Sin cuenta</span><span>.text / .txt</span></div>
+      </div>
+      <div class="product-preview" aria-hidden="true">
+        <div class="preview-top"><i></i><i></i><i></i><span>architecture.flow</span><b>Mermaid sync</b></div>
+        <div class="preview-body"><div class="preview-rail"><i></i><i></i><i></i></div><div class="preview-canvas"><span class="preview-node root">API Gateway</span><span class="preview-node one">Auth Service</span><span class="preview-node two">Event Queue</span><span class="preview-node three">Data Store</span><svg viewBox="0 0 500 280"><path d="M180 135 C230 135 225 72 285 72"/><path d="M180 135 C230 135 225 140 285 140"/><path d="M180 135 C230 135 225 208 285 208"/></svg></div></div>
+      </div>
+    </section>
+
+    <footer class="home-footer"><span>Flowcharts · Local first</span><span>Sin cuentas. Sin nube. Sin ruido.</span></footer>
+  </main>
+
+  <main id="editorView" class="editor-view hidden">
+    <header class="editor-header">
+      <div class="header-left">
+        <button id="backBtn" class="square-btn" title="Volver">←</button>
+        <a class="brand small"><span class="brand-mark">F</span></a>
+        <span class="divider"></span>
+        <div class="title-wrap"><input id="diagramTitle" value="Flowchart sin título" aria-label="Nombre del flowchart" /><span id="saveState">Cambios guardados localmente</span></div>
+      </div>
+      <div class="header-center">
+        <button id="undoBtn" class="square-btn" title="Deshacer">↶</button><button id="redoBtn" class="square-btn" title="Rehacer">↷</button>
+        <span class="divider"></span>
+        <button id="zoomOutBtn" class="square-btn">−</button><span id="zoomLabel">100%</span><button id="zoomInBtn" class="square-btn">＋</button>
+      </div>
+      <div class="header-actions">
+        <button id="themeBtn" class="btn btn-secondary compact" title="Cambiar tema">☀ Tema claro</button>
+        <button id="saveBtn" class="btn btn-secondary compact">Guardar</button>
+        <button id="exportBtn" class="btn btn-primary compact">Exportar código</button>
+        <button id="showCodeBtn" class="btn btn-secondary compact hidden">Mostrar código</button>
+      </div>
+    </header>
+
+    <aside class="tool-rail">
+      <button class="tool active" data-tool="select" title="Seleccionar"><span>↖</span><small>Selección</small></button>
+      <button class="tool" data-tool="node" title="Agregar nodo"><span>□</span><small>Nodo</small></button>
+      <button class="tool" data-tool="decision" title="Agregar decisión"><span>◇</span><small>Decisión</small></button>
+      <button class="tool" data-tool="title" title="Agregar título"><span>T</span><small>Título</small></button>
+      <button class="tool" data-tool="connect" title="Conectar nodos"><span>↗</span><small>Conectar</small></button>
+      <div class="rail-spacer"></div>
+      <button id="fitBtn" class="tool" title="Ajustar vista"><span>⌗</span><small>Ajustar</small></button>
+    </aside>
+
+    <section id="canvasWrap" class="canvas-wrap">
+      <div id="canvas" class="canvas">
+        <div id="groupsLayer"></div>
+        <svg id="edgesLayer" class="edges-layer" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" /></marker><marker id="arrow-start" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 10 0 L 0 5 L 10 10 z" /></marker></defs><g id="edgesGroup"></g><path id="connectionPreview" class="connection-preview hidden" /></svg>
+        <div id="nodesLayer"></div><div id="marquee" class="marquee hidden"></div>
+      </div>
+      <div class="minimap" id="minimap"><div class="mini-title">VISTA COMPLETA</div><svg id="minimapSvg" viewBox="0 0 220 120"><g id="minimapContent"></g><rect id="minimapViewport" class="minimap-viewport" /></svg><div id="minimapControls" class="minimap-controls"></div></div>
+    </section>
+
+    <aside class="code-panel">
+      <div class="panel-header"><div><span class="status-dot"></span><strong>Código Mermaid</strong></div><button id="collapseCodeBtn" class="square-btn">›</button></div>
+      <div class="code-toolbar"><span>flowchart TD</span><button id="copyCodeBtn" class="icon-text-btn">Copiar</button></div>
+      <textarea id="mermaidCode" spellcheck="false" aria-label="Código Mermaid"></textarea>
+      <div class="panel-footer"><span><i></i> Sincronizado</span><span id="codeStats">0 nodos · 0 conexiones</span></div>
+    </aside>
+
+    <div id="selectionToolbar" class="context-toolbar hidden">
+      <button id="editNodeBtn">✎ Editar texto</button><span></span>
+      <label>Forma <select id="nodeShape"><option value="node">Rectángulo</option><option value="rounded">Redondeado</option><option value="decision">Decisión</option></select></label>
+      <label>Tamaño <select id="nodeFontSize"><option value="11">11</option><option value="13" selected>13</option><option value="16">16</option><option value="20">20</option></select></label>
+      <label>Alinear <select id="nodeAlign"><option value="left">←</option><option value="center" selected>↔</option><option value="right">→</option></select></label><span></span>
+      <div class="color-presets" aria-label="Colores predeterminados"><button data-color="" title="Sin color">×</button><button data-color="#1687ff"></button><button data-color="#10b981"></button><button data-color="#f59e0b"></button><button data-color="#ef4444"></button><button data-color="#8b5cf6"></button></div>
+      <label class="color-control" title="Color personalizado"><input id="nodeColor" type="color" value="#1687ff" /><i></i> Personalizado</label>
+      <span></span><button id="duplicateNodeBtn">⧉ Duplicar</button><button id="deleteNodeBtn" class="danger">Del Eliminar</button>
+    </div>
+    <div id="edgeToolbar" class="context-toolbar hidden">
+      <label>Forma <select id="edgeShape"><option value="curve">Curva</option><option value="corner">Esquinada</option><option value="straight">Recta</option></select></label>
+      <label class="check-control"><input id="edgeDashed" type="checkbox" /> Discontinua</label>
+      <span></span><label>Texto <input id="edgeLabel" type="text" placeholder="Sin texto" /></label>
+      <label>Posición <input id="edgeLabelPos" type="range" min="5" max="95" value="50" /></label>
+      <span></span><select id="edgeDirection" class="hidden"><option value="forward">→</option><option value="back">←</option><option value="both">↔</option></select><button id="reverseEdgeBtn" title="Invertir conexión">⟳ Invertir</button>
+      <button id="deleteEdgeBtn" class="danger">Del Eliminar</button>
+    </div>
+  </main>
+
+
+  <dialog id="leaveDialog" class="leave-dialog">
+    <div class="leave-dialog-icon">!</div>
+    <h2>¿Salir sin guardar?</h2>
+    <p>Tienes cambios pendientes en este flowchart. Si sales ahora, se perderán.</p>
+    <div class="modal-actions"><button id="stayBtn" class="btn btn-secondary">Seguir editando</button><button id="leaveBtn" class="btn btn-danger">Salir sin guardar</button></div>
+  </dialog>
+
+  <dialog id="exportDialog" class="export-dialog">
+    <div class="modal-heading"><div><span class="modal-icon">↗</span><div><h2>Exportar Mermaid</h2><p>Copia el código o guárdalo como archivo Mermaid .txt.</p></div></div><button id="closeExportBtn" class="square-btn">×</button></div>
+    <div class="export-code-wrap"><div class="export-code-head"><span>MERMAID</span><span id="exportStats"></span></div><pre id="exportCode"></pre></div>
+    <div class="modal-actions"><button id="closeExportBtn2" class="btn btn-secondary">Cerrar</button><button id="saveExportBtn" class="btn btn-secondary">Guardar .txt</button><button id="copyExportBtn" class="btn btn-primary">Copiar código</button></div>
+  </dialog>
+
+  <script src="parser.js"></script>
+  <script src="layout.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
